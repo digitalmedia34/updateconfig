@@ -74,7 +74,8 @@ Function Set-Variables
         [string] $Path,
         [regex] $Regex,
         [string] $Encoding,
-        [switch] $FailOnMissing
+        [switch] $FailOnMissing,
+        [switch] $writeBom
     )
     
     Write-Host "Replacing tokens in file '${Path}'..."
@@ -104,11 +105,43 @@ Function Set-Variables
     
     $content = $regex.Replace($content, $replaceCallback)
     
-    if (!$Encoding)
+    if (!$Encoding -or $Encoding -eq "auto")
     {
         $Encoding = Get-FileEncoding -Path $Path
     }
-    
+
+    switch ($Encoding)
+    {
+        "ascii"
+        {
+            $Encoding = New-Object System.Text.ASCIIEncoding
+        }
+        "utf7"
+        {
+            $Encoding = New-Object System.Text.UTF7Encoding($writeBom)
+        }
+        "utf8"
+        {
+            $Encoding = New-Object System.Text.UTF8Encoding($writeBom)
+        }
+        "unicode"
+        {
+            $Encoding = New-Object System.Text.UnicodeEncoding($writeBom)
+        }
+        "BigEndianUnicode"
+        {
+            $Encoding = New-Object System.Text.UnicodeEncoding($true, $writeBom)
+        }
+        "utf32"
+        {
+            $Encoding = New-Object System.Text.UTF32Encoding($writeBom)
+        }
+        "BigEndianUTF32"
+        {
+            $Encoding = New-Object System.Text.UTF32Encoding($rue, $writeBom)
+        }
+    }
+
     Write-Verbose "Using encoding '${Encoding}'"
-    $content | Set-Content -Path $Path -Encoding $Encoding
+    [System.IO.File]::WriteAllText($Path, $content, $Encoding)
 }
