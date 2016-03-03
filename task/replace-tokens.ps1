@@ -5,7 +5,7 @@ param(
     [string] $failOnMissing,
     [string] $tokenPrefix,
     [string] $tokenSuffix,
-    [string] $writeBom
+    [string] $writeBOM
 )
 
 Import-Module "Microsoft.TeamFoundation.DistributedTask.Task.Internal"
@@ -16,10 +16,10 @@ Write-Verbose "encoding = ${encoding}"
 Write-Verbose "failOnMissing = ${failOnMissing}"
 Write-Verbose "tokenPrefix = ${tokenPrefix}"
 Write-Verbose "tokenSuffix = ${tokenSuffix}"
-Write-Verbose "writeBom = ${writeBom}"
+Write-Verbose "writeBOM = ${writeBOM}"
 
 [bool]$failOnMissing = $failOnMissing -eq 'true'
-[bool]$writeBom = $writeBom -eq 'true'
+[bool]$writeBOM = $writeBOM -eq 'true'
 
 . $PSScriptRoot\functions.ps1
 
@@ -34,5 +34,5 @@ Get-MatchingFiles -Pattern $targetFiles -Root $env:BUILD_SOURCESDIRECTORY | % {
         return
     }
     
-    Set-Variables -Path $_ -Regex $regex -Encoding $encoding -WriteBom:$writeBom -FailOnMissing:$failOnMissing
+    Set-Variables -Path $_ -Regex $regex -EncodingName $encoding -WriteBOM:$writeBOM -FailOnMissing:$failOnMissing
 }
