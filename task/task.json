@@ -25,8 +25,13 @@
     ],
     "inputs": [
         {
-            "name": "targetFiles",
+            "name": "rootDirectory",
             "type": "filePath",
+            "label": "Root Directory",
+            "defaultValue": "$(System.DefaultWorkingDirectory)",
+            "required": true,
+            "helpMarkDown": "Base directory"
+        },
             "label": "Target files",
             "defaultValue": "**\\*.config",
             "required": true,
@@ -91,7 +96,7 @@
         "PowerShell": {
             "target": "$(currentDirectory)\\replace-tokens.ps1",
             "argumentFormat": "",
-            "workingDirectory": "$(currentDirectory)"
+            "workingDirectory": "$(System.DefaultWorkingDirectory)"
         }
     }
 }

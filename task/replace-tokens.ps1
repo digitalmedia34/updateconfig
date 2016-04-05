@@ -1,5 +1,6 @@
 [CmdletBinding()]
 param(
+    [string] $rootDirectory,
     [string] $targetFiles,
     [string] $encoding,
     [string] $failOnMissing,
@@ -26,7 +27,7 @@ Write-Verbose "writeBOM = ${writeBOM}"
 $regex = [regex] "${tokenPrefix}((?:(?!${tokenSuffix}).)*)${tokenSuffix}"
 Write-Verbose "regex: ${regex}"
 
-Get-MatchingFiles -Pattern $targetFiles -Root $env:BUILD_SOURCESDIRECTORY | % {
+Get-MatchingFiles -Pattern $targetFiles -Root $rootDirectory | % {
     if (!(Test-Path $_))
     {
         Write-Error "File '${_}' not found."
