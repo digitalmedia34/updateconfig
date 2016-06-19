@@ -100,7 +100,7 @@ Function Set-Variables
         [string] $Path,
         [regex] $Regex,
         [string] $EncodingName,
-        [switch] $FailOnMissing,
+        [string] $ActionOnMissing,
         [switch] $WriteBOM
     )
     
@@ -115,13 +115,11 @@ Function Set-Variables
         $value = Get-TaskVariable $distributedTaskContext $Match.Groups[1].Value
         if (!$value)
         {
-            if ($FailOnMissing)
+            switch ($ActionOnMissing)
             {
-                Write-Error "Variable '$($Match.Groups[1].Value)' not found."
-            }
-            else
-            {
-                Write-Warning "Variable '$($Match.Groups[1].Value)' not found."   
+                'warn' { Write-Warning "Variable '$($Match.Groups[1].Value)' not found." }
+                'fail' { Write-Error "Variable '$($Match.Groups[1].Value)' not found." }
+                default { Write-Verbose "Variable '$($Match.Groups[1].Value)' not found." }
             }
         }
         
