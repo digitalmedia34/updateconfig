@@ -81,6 +81,14 @@
             "helpMarkDown": "Specify the action on a missing variable."
         },
         {
+            "name": "keepToken",
+            "type": "boolean",
+            "label": "Keep token for missing variable",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "If checked tokens with missing variables will not be replaced by empty string."
+        },
+        {
             "name": "tokenPrefix",
             "type": "string",
             "label": "Token prefix",

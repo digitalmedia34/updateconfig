@@ -7,7 +7,8 @@ param(
     [string] $tokenPrefix,
     [string] $tokenSuffix,
     [string] $writeBOM,
-    [string] $actionOnMissing
+    [string] $actionOnMissing,
+    [string] $keepToken
 )
 
 Import-Module "Microsoft.TeamFoundation.DistributedTask.Task.Internal"
@@ -18,6 +19,7 @@ Write-Verbose "Parameter Values"
 $PSBoundParameters.Keys | % { Write-Verbose "  ${_} = $($PSBoundParameters[$_])" }
 
 [bool]$writeBOM = $writeBOM -eq 'true'
+[bool]$keepToken = $keepToken -eq 'true'
 
 # back-compat support
 [bool]$failOnMissing = $failOnMissing -eq 'true'
@@ -40,5 +42,5 @@ Get-MatchingFiles -Pattern $targetFiles -Root $rootDirectory | % {
         return
     }
     
-    Set-Variables -Path $_ -Regex $regex -EncodingName $encoding -WriteBOM:$writeBOM -ActionOnMissing $actionOnMissing
+    Set-Variables -Path $_ -Regex $regex -EncodingName $encoding -WriteBOM:$writeBOM -ActionOnMissing $actionOnMissing -KeepToken:$keepToken
 }
