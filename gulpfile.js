@@ -29,7 +29,7 @@ gulp.task('build', ['clean', 'compile'], function () {
         .pipe(gulp.dest(_buildRoot));
 
     getExternalModules();
-    
+
     return merge(extension, task);
 });
 
@@ -65,22 +65,22 @@ gulp.task('package', ['build'], function() {
             var patch = Math.floor(Math.floor(now.getSeconds() + (60 * (now.getMinutes() + (60 * now.getHours())))) * 0.5)
             options.version = major + '.' + minor + '.' + patch
         }
-        
+
         if (!semver.valid(options.version)) {
             throw new gutil.PluginError('package', 'Invalid semver version: ' + options.version);
         }
     }
-    
+
     switch (options.stage) {
         case 'dev':
-            options.taskId = '0664FF86-F509-4392-A33C-B2D9239B9AE5';
+            options.taskId = '1664FF86-F109-4392-A33C-B2D9139B9AE3';
             options.public = false;
             break;
     }
-    
+
     updateExtensionManifest(options);
     updateTaskManifest(options);
-    
+
     shell.exec('tfx extension create --root "' + _buildRoot + '" --output-path "' + _packagesRoot +'"')
 });
 
@@ -111,25 +111,25 @@ getExternalModules = function() {
 updateExtensionManifest = function(options) {
     var manifestPath = path.join(_buildRoot, 'vss-extension.json')
     var manifest = JSON.parse(fs.readFileSync(manifestPath));
-    
+
     if (options.version) {
         manifest.version = options.version;
     }
-    
+
     if (options.stage) {
         manifest.id = manifest.id + '-' + options.stage
         manifest.name = manifest.name + ' (' + options.stage + ')'
     }
 
     manifest.public = options.public;
-    
+
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 4));
 }
 
 updateTaskManifest = function(options) {
     var manifestPath = path.join(_buildRoot, 'task', 'task.json')
     var manifest = JSON.parse(fs.readFileSync(manifestPath));
-    
+
     if (options.version) {
         manifest.version.Major = semver.major(options.version);
         manifest.version.Minor = semver.minor(options.version);
@@ -137,7 +137,7 @@ updateTaskManifest = function(options) {
     }
 
     manifest.helpMarkDown = 'v' + manifest.version.Major + '.' + manifest.version.Minor + '.' + manifest.version.Patch + ' - ' + manifest.helpMarkDown;
-    
+
     if (options.stage) {
         manifest.friendlyName = manifest.friendlyName + ' (' + options.stage
 
@@ -147,10 +147,10 @@ updateTaskManifest = function(options) {
 
         manifest.friendlyName = manifest.friendlyName + ')'
     }
-    
+
     if (options.taskId) {
         manifest.id = options.taskId
     }
-    
+
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 4));
 }

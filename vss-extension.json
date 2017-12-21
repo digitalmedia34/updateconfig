@@ -1,14 +1,14 @@
 {
     "manifestVersion": 1,
-    "id": "replacetokens",
-    "name": "Replace Tokens",
-    "version": "2.2.1",
+    "id": "updateconfig",
+    "name": "Update Config",
+    "version": "1.0.8",
     "public": true,
-    "publisher": "qetza",
+    "publisher": "digitalmedia34",
     "targets": [
         { "id": "Microsoft.VisualStudio.Services" }
-    ],    
-    "description": "Task to replace tokens in files.",
+    ],
+    "description": "Update config variables in files.",
     "categories": [
         "Build and release"
     ],
@@ -21,7 +21,7 @@
         "substitution"
     ],
     "links": {
-        "support": { "uri": "https://github.com/qetza/vsts-replacetokens-task/issues" }
+        "support": { "uri": "https://github.com/digitalmedia34/vsts-updateconfig-task/issues" }
     },
     "icons": {
         "default": "images/extension-icon.png"
@@ -35,7 +35,7 @@
     ],
     "repository": {
         "type": "git",
-        "uri": "https://github.com/qetza/vsts-replacetokens-task"
+        "uri": "https://github.com/digitalmedia34/vsts-updateconfig-task"
     },
     "content": {
         "details": { "path": "README.md" },
@@ -50,7 +50,7 @@
     ],
     "contributions": [
         {
-            "id": "replacetokens-task",
+            "id": "updateconfig-task",
             "type": "ms.vss-distributed-task.task",
             "targets": [
                 "ms.vss-distributed-task.tasks"

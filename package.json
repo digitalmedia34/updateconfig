@@ -1,12 +1,12 @@
 {
-  "name": "qetza.vsts-replacetokens-task",
-  "version": "0.1.0",
-  "description": "Build task for VS Team Services that can run replace tokens in files.",
-  "author": "Guillaume Rouchon",
+  "name": "digitalmedia34.vsts-updateconfig-task",
+  "version": "0.1.8",
+  "description": "Build task for VS Team Services that can run replace variables in files.",
+  "author": "Digitalmedia34",
   "license": "MIT",
-  "homepage": "https://github.com/qetza/vsts-replacetokens-task#readme",
+  "homepage": "https://github.com/digitalmedia34/vsts-updateconfig-task#readme",
   "bugs": {
-    "url": "https://github.com/qetza/vsts-replacetokens-task/issues"
+    "url": "https://github.com/digitalmedia34/vsts-updateconfig-task/issues"
   },
   "keywords": [
     "VSTS",
@@ -19,11 +19,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/qetza/vsts-replacetokens-task.git"
+    "url": "git+https://github.com/digitalmedia34/vsts-updateconfig-task.git"
   },
   "devDependencies": {
     "@types/iconv-lite": "0.0.1",
-    "@types/node": "^6.0.52",
+    "@types/node": "^6.0.94",
     "@types/q": "0.0.32",
     "del": "^2.2.2",
     "gulp": "^3.9.1",

@@ -3,6 +3,7 @@ import trm = require('vsts-task-lib/toolrunner');
 import path = require('path');
 import fs = require('fs');
 import iconv = require('iconv-lite');
+import { escape } from 'querystring';
 
 const ENCODING_AUTO: string = 'auto';
 const ENCODING_ASCII: string = 'ascii';
@@ -21,23 +22,23 @@ var mapEncoding = function (encoding: string): string {
             return ENCODING_AUTO;
 
         case 'Ascii':
-        case 'ascii': 
+        case 'ascii':
             return ENCODING_ASCII;
 
         case 'UTF7':
-        case 'utf-7': 
+        case 'utf-7':
             return ENCODING_UTF_7;
 
         case 'UTF8':
-        case 'utf-8': 
+        case 'utf-8':
             return ENCODING_UTF_8;
 
         case 'Unicode':
-        case 'utf-16le': 
+        case 'utf-16le':
             return ENCODING_UTF_16LE;
 
         case 'BigEndianUnicode':
-        case 'utf-16be': 
+        case 'utf-16be':
             return ENCODING_UTF_16BE;
 
         case 'UTF32':
@@ -81,48 +82,60 @@ var getEncoding = function (filePath: string): string {
     }
 }
 
-var replaceTokensInFile = function (filePath: string, regex: RegExp, encoding: string, keepToken: boolean, actionOnMissing: string, writeBOM: boolean, emptyValue: string): void {
-    console.log('replacing tokens in: ' + filePath);
+var replaceTokensInFile = function (filePath: string, encoding: string, writeBOM: boolean): void {
+    console.log('replacing variables in: ' + filePath);
 
     // ensure encoding
     if (encoding === ENCODING_AUTO)
         encoding = getEncoding(filePath);
 
+    let tokenPrefix: string = tl.getInput('tokenPrefix', true);
+    let tokenSuffix: string = tl.getInput('tokenSuffix', true);
+
+    const v = tl.getVariables();
+
     // read file and replace tokens
     let content: string = iconv.decode(fs.readFileSync(filePath), encoding);
-    content = content.replace(regex, (match, name) => {
-        let value: string = tl.getVariable(name);
 
-        if (!value)
-        {
-            if (keepToken)
-                value = match;
-            else
-                value = '';
+    v.forEach(e => {
+        let name = replaceRegExp(e.name);
 
-            let message = 'variable not found: ' + name;
-            switch (actionOnMissing)
-            {
-                case ACTION_WARN:
-                    tl.warning(message);
-                    break;
-
-                case ACTION_FAIL:
-                    tl.setResult(tl.TaskResult.Failed, message);
-                    break;
-
-                default:
-                    tl.debug(message);
+        //skips if the name contains our variable to be replaced.
+        if(name.indexOf(tokenPrefix) <= -1){
+            let loopVar : boolean = e.value.indexOf(tokenPrefix) > -1;
+            while(loopVar) {
+                console.log('Found nested variable, attempting to replace: ' + e.value)
+                e.value = replaceInnerTokens(e.value, tokenPrefix, tokenSuffix);
+                loopVar = e.value.indexOf(tokenPrefix) > -1;
             }
-        }
-        else if (emptyValue && value === emptyValue)
-            value = '';
 
-        return value;
+            let masterRegEx = new RegExp('(?:' + name + ').*?(?:value="|connectionString=")(.*?)"', 'gm');
+            content = content.replace(masterRegEx, (match, caption) => {
+                let val = match.replace(caption == '' ? '""' : caption, caption == '' ? '"'+ e.value +'"' :  e.value);
+                return val;
+            });
+        }
+
     });
 
     // write file
     fs.writeFileSync(filePath, iconv.encode(content, encoding, { addBOM: writeBOM, stripBOM: null, defaultEncoding: null }));
+}
+
+var replaceInnerTokens = function(value: string, tokenPrefix: string, tokenSuffix:string ): string {
+    tokenPrefix = tokenPrefix.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    tokenSuffix = tokenSuffix.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+
+    let regex: RegExp = new RegExp(tokenPrefix + '((?:(?!' + tokenSuffix + ').)*)' + tokenSuffix, 'gm');
+    let variableName = value.match(regex);
+    let newvalue = tl.getVariable(variableName[0]);
+    var tmpContent = value.replace(regex, newvalue);
+
+    return tmpContent;
+}
+
+var replaceRegExp = function(str: string){
+    return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }
 
 async function run() {
@@ -130,12 +143,7 @@ async function run() {
         // load inputs
         let root: string = tl.getPathInput('rootDirectory', false, true);
         let encoding: string = mapEncoding(tl.getInput('encoding', true));
-        let tokenPrefix: string = tl.getInput('tokenPrefix', true).replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-        let tokenSuffix: string = tl.getInput('tokenSuffix', true).replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-        let keepToken: boolean = tl.getBoolInput('keepToken', true);
-        let actionOnMissing: string = tl.getInput('actionOnMissing', true);
         let writeBOM: boolean = tl.getBoolInput('writeBOM', true);
-        let emptyValue: string = tl.getInput('emptyValue', false);
 
         let targetFiles: string[] = [];
         tl.getDelimitedInput('targetFiles', '\n', true).forEach((x: string) => {
@@ -146,20 +154,15 @@ async function run() {
                 })
         });
 
-        // initialize task
-        let regex: RegExp = new RegExp(tokenPrefix + '((?:(?!' + tokenSuffix + ').)*)' + tokenSuffix, 'gm');
-        tl.debug('pattern: ' + regex.source);
-
         // process files
         tl.findMatch(root, targetFiles).forEach(filePath => {
             if (!tl.exist(filePath))
             {
                 tl.error('file not found: ' + filePath);
-
                 return;
             }
 
-            replaceTokensInFile(filePath, regex, encoding, keepToken, actionOnMissing, writeBOM, emptyValue);
+            replaceTokensInFile(filePath, encoding, writeBOM);
         });
     }
     catch (err)

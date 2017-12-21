@@ -1,19 +1,19 @@
 {
-    "id": "A8515EC8-7254-4FFD-912C-86772E2B5962",
-    "name": "replacetokens",
-    "friendlyName": "Replace Tokens",
-    "description": "Replace tokens in files",
-    "helpMarkDown": "[More Information](https://github.com/qetza/vsts-replacetokens-task#readme)",
+    "id": "A0515EC8-6254-5FFD-932C-86772E2B5960",
+    "name": "updateconfig",
+    "friendlyName": "Update config",
+    "description": "Update config variables in files",
+    "helpMarkDown": "[More Information](https://github.com/digitalmedia34/vsts-updateconfig-task#readme)",
     "category": "Utility",
     "visibility": [
         "Build",
         "Release"
     ],
-    "author": "Guillaume Rouchon",
+    "author": "Digitalmedia34",
     "version": {
-        "Major": 2,
-        "Minor": 2,
-        "Patch": 1
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 8
     },
     "minimumAgentVersion": "2.105.0",
     "groups": [
@@ -71,36 +71,13 @@
             "visibleRule": "encoding != ascii"
         },
         {
-            "name": "actionOnMissing",
-            "type": "pickList",
-            "label": "Action",
-            "defaultValue": "warn",
-            "groupName": "missing",
-            "required": true,
-            "options": {
-                "continue": "silently continue",
-                "warn": "log warning",
-                "fail": "fail" 
-            },
-            "helpMarkDown": "Specify the action on a missing variable."
-        },
-        {
-            "name": "keepToken",
-            "type": "boolean",
-            "label": "Keep token",
-            "defaultValue": "false",
-            "groupName": "missing",
-            "required": true,
-            "helpMarkDown": "If checked tokens with missing variables will not be replaced by empty string."
-        },
-        {
             "name": "tokenPrefix",
             "type": "string",
             "label": "Token prefix",
             "defaultValue": "#{",
             "groupName": "advanced",
             "required": true,
-            "helpMarkDown": "The prefix of the tokens to search in the target files."
+            "helpMarkDown": "The prefix of the tokens to search in the target files. Only used when replacing nested variables"
         },
         {
             "name": "tokenSuffix",
@@ -109,19 +86,10 @@
             "defaultValue": "}#",
             "groupName": "advanced",
             "required": true,
-            "helpMarkDown": "The suffix of the tokens to search in the target files."
-        },
-        {
-            "name": "emptyValue",
-            "type": "string",
-            "label": "Empty value",
-            "defaultValue": "(empty)",
-            "groupName": "advanced",
-            "required": false,
-            "helpMarkDown": "The variable value which will be replaced by an empty string."
+            "helpMarkDown": "The suffix of the tokens to search in the target files. Only used when replacing nested variables"
         }
     ],
-    "instanceNameFormat": "Replace tokens in $(targetFiles)",
+    "instanceNameFormat": "Update config variables",
     "execution": {
         "Node": {
             "target": "index.js"
