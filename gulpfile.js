@@ -52,7 +52,7 @@ gulp.task('package', ['build'], function() {
     var options = {
         version: args.version,
         stage: args.stage,
-        public: args.public,
+        public: true,
         taskId: args.taskId
     }
 

@@ -83,7 +83,7 @@ var getEncoding = function (filePath: string): string {
 }
 
 var replaceTokensInFile = function (filePath: string, encoding: string, writeBOM: boolean): void {
-    console.log('replacing variables in: ' + filePath);
+    tl.debug('replacing variables in: ' + filePath);
 
     // ensure encoding
     if (encoding === ENCODING_AUTO)
@@ -99,23 +99,26 @@ var replaceTokensInFile = function (filePath: string, encoding: string, writeBOM
 
     v.forEach(e => {
         let name = replaceRegExp(e.name);
+        tl.debug('Variable name: ' + name);
 
         //skips if the name contains our variable to be replaced.
         if(name.indexOf(tokenPrefix) <= -1){
             let loopVar : boolean = e.value.indexOf(tokenPrefix) > -1;
             while(loopVar) {
-                console.log('Found nested variable, attempting to replace: ' + e.value)
+                tl.debug('Found nested variable, attempting to replace: ' + e.value)
                 e.value = replaceInnerTokens(e.value, tokenPrefix, tokenSuffix);
                 loopVar = e.value.indexOf(tokenPrefix) > -1;
             }
 
-            let masterRegEx = new RegExp('(?:' + name + ').*?(?:value="|connectionString=")(.*?)"', 'gm');
+            let masterRegEx = new RegExp('(?:"' + name + '").*?(?:value="|connectionString=")(.*?)"', 'gm');
             content = content.replace(masterRegEx, (match, caption) => {
+                tl.debug('match: ' + match + ' with caption: ' + caption + ' will be replace with: ' + e.value);
+
                 let val = match.replace(caption == '' ? '""' : caption, caption == '' ? '"'+ e.value +'"' :  e.value);
+                tl.debug('variable replaced: ' + val);
                 return val;
             });
         }
-
     });
 
     // write file

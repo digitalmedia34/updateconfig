@@ -1,12 +1,12 @@
 {
   "name": "digitalmedia34.vsts-updateconfig-task",
-  "version": "0.1.8",
+  "version": "0.2.2",
   "description": "Build task for VS Team Services that can run replace variables in files.",
   "author": "Digitalmedia34",
   "license": "MIT",
-  "homepage": "https://github.com/digitalmedia34/vsts-updateconfig-task#readme",
+  "homepage": "https://github.com/digitalmedia34/updateconfig#readme",
   "bugs": {
-    "url": "https://github.com/digitalmedia34/vsts-updateconfig-task/issues"
+    "url": "https://github.com/digitalmedia34/updateconfig/issues"
   },
   "keywords": [
     "VSTS",
@@ -19,7 +19,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/digitalmedia34/vsts-updateconfig-task.git"
+    "url": "git+https://github.com/digitalmedia34/updateconfig.git"
   },
   "devDependencies": {
     "@types/iconv-lite": "0.0.1",
