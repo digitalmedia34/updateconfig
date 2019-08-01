@@ -110,14 +110,19 @@ var replaceTokensInFile = function (filePath: string, encoding: string, writeBOM
                 loopVar = e.value.indexOf(tokenPrefix) > -1;
             }
 
-            let masterRegEx = new RegExp('(?:"' + name + '").*?(?:value="|connectionString=")(.*?)"', 'gm');
-            content = content.replace(masterRegEx, (match, caption) => {
-                tl.debug('match: ' + match + ' with caption: ' + caption + ' will be replace with: ' + e.value);
+            let masterRegExps = 
+                [new RegExp('(?:"' + name + '").*?(?:value="|connectionString=")(.*?)"', 'gm'),
+                 new RegExp('(?:name="' + name + '").*?>\\s*<value>(.*?)<\/value>', 'gm')];
 
-                let val = match.replace(caption == '' ? '""' : caption, caption == '' ? '"'+ e.value +'"' :  e.value);
-                tl.debug('variable replaced: ' + val);
-                return val;
-            });
+            masterRegExps.forEach(masterRegEx => {
+                content = content.replace(masterRegEx, (match, caption) => {
+                    tl.debug('match: ' + match + ' with caption: ' + caption + ' will be replace with: ' + e.value);
+                    
+                    let val = match.replace(caption == '' ? '""' : caption, caption == '' ? '"'+ e.value +'"' :  e.value);
+                    tl.debug('variable replaced: ' + val);
+                    return val;
+                });
+            })
         }
     });
 
