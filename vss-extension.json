@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "updateconfig",
     "name": "Update Config",
-    "version": "1.4.2",
+    "version": "1.4.3",
     "public": true,
     "publisher": "digitalmedia34",
     "targets": [
