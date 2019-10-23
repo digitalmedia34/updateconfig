@@ -112,7 +112,7 @@ var replaceTokensInFile = function (filePath: string, encoding: string, writeBOM
 
             let masterRegExps = 
                 [new RegExp('(?:"' + name + '")[^>]*?(?:value="|connectionString=")(.*?)"','gm'),
-                 new RegExp('(?:name="' + name + '").*?>\\s*<value>(.*?)<\/value>', 'gm')];
+                 new RegExp('(?:name="' + name + '").*?>\\s*<value>([\\S\\s]*?)<\/value>', 'gm')];
 
             masterRegExps.forEach(masterRegEx => {
                 content = content.replace(masterRegEx, (match, caption) => {
