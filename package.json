@@ -1,6 +1,6 @@
 {
   "name": "digitalmedia34.vsts-updateconfig-task",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Build task for VS Team Services that can run replace variables in files.",
   "author": "Digitalmedia34",
   "license": "MIT",
